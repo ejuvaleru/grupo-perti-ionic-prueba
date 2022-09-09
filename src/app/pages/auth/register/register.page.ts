@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IUser } from 'src/app/interfaces/user';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class RegisterPage implements OnInit {
   public registerForm: FormGroup;
   private userToRegister: IUser;
 
-  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private authService: AuthService) { }
+  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private authService: AuthService, private notificationService: NotificationService,) { }
 
   ngOnInit() {
     this.initForm();
@@ -24,23 +25,24 @@ export class RegisterPage implements OnInit {
 
   // Methods
   onRegister(form: FormGroup) {
-    if (!form.valid) return alert("Por favor ingrese todos los datos.");
+    if (!form.valid) return this.notificationService.showNotification("Por favor ingrese todos los datos.");
     if (this.userToRegister.id === null || this.userToRegister.id === '') this.userToRegister.id = new Date().toISOString();
     this.isLoading = true;
-    const result = this.authService.onRegister(this.userToRegister);
-    if(result.code === 0) return alert(result.message);
+    const registerResult = this.authService.onRegister(this.userToRegister);
+    if (registerResult.code === 0) return this.notificationService.showNotification(registerResult.message);
+
     this.isLoading = false;
     this.initForm();
     const loginResult = this.authService.onLogin(this.userToRegister.userName, this.userToRegister.password);
-    if(loginResult.code === 0) return alert(result.message);
-
+    if (loginResult.code === 0) return this.notificationService.showNotification(loginResult.message);
+    
+    this.notificationService.showNotification(registerResult.message);
     this.router.navigateByUrl('/');
   }
 
   onGetRandomUserInfo() {
     this.isLoading = true;
     this.userService.getRandomUserInfo().subscribe((data) => {
-
       const randomUser = data.results[0];
       const id = randomUser.login.uuid
       const userName = randomUser.login.username;
@@ -80,7 +82,7 @@ export class RegisterPage implements OnInit {
   }
 
   hasAlreadyLoggedIn() {
-    if(this.authService.isAuthenticated()) return this.router.navigate(['/']);
+    if (this.authService.isAuthenticated()) return this.router.navigate(['/']);
   }
 
 }

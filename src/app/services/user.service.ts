@@ -12,6 +12,6 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getRandomUserInfo(): Observable<UserAPIResponse> {
-    return this.http.get<UserAPIResponse>(environment.userApi);
+      return this.http.get<UserAPIResponse>(environment.userApi);
   }
 }

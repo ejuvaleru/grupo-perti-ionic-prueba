@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  userApi: "https://randomuser.me/api",
+  movieApi: "http://api.tvmaze.com/"
 };
