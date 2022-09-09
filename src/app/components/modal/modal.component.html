@@ -1,0 +1,34 @@
+<ion-toolbar>
+  <ion-buttons slot="primary">
+    <ion-button color="primary" (click)="dismiss()">
+      <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="chevron-back-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title>{{show.name}}</ion-title>
+</ion-toolbar>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="4">
+                <img [src]="show.image.medium" [alt]="show.name" style="object-fit: scale-down;" />
+              </ion-col>
+              <ion-col size="8">
+                <p>Idioma: {{show.language}}</p>
+                <p>Estreno: {{show.premiered}}</p>
+                <p>Rating: {{show.rating.average}}</p>
+              </ion-col>
+              <ion-col size="12">
+                <div [innerHTML]="show.summary"></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
