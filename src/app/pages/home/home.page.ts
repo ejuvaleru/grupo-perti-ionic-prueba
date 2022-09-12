@@ -19,6 +19,7 @@ export class HomePage implements OnInit {
   public movies: ShowAPIResponse[];
   public query: FormControl;
   private lastQueryValue = '';
+  public error: any;
 
   constructor(private router: Router, public modalController: ModalController, private authService: AuthService, private movieService: MovieService) { }
 
@@ -62,6 +63,9 @@ export class HomePage implements OnInit {
     this.movies = [];
     this.movieService.getAllMovies().subscribe((data) => {
       this.movies = data;
+    }, (error) => {
+      console.log(error);
+      this.error = error;
     });
   }
 

@@ -20,13 +20,22 @@ export class RegisterPage implements OnInit {
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private authService: AuthService, private notificationService: NotificationService,) { }
 
   ngOnInit() {
+    this.hasAlreadyLoggedIn();
     this.initForm();
   }
 
   // Methods
   onRegister(form: FormGroup) {
     if (!form.valid) return this.notificationService.showNotification("Por favor ingrese todos los datos.");
-    if (this.userToRegister.id === null || this.userToRegister.id === '') this.userToRegister.id = new Date().toISOString();
+    if (!this.userToRegister?.id) {
+      this.userToRegister = {
+        id: new Date().toISOString(),
+        fullName: form.value.name + ' ' + form.value.lastName,
+        userName: form.value.userName,
+        password: form.value.password,
+        registerDate: new Date()
+      };
+    }
     this.isLoading = true;
     const registerResult = this.authService.onRegister(this.userToRegister);
     if (registerResult.code === 0) return this.notificationService.showNotification(registerResult.message);
@@ -35,7 +44,7 @@ export class RegisterPage implements OnInit {
     this.initForm();
     const loginResult = this.authService.onLogin(this.userToRegister.userName, this.userToRegister.password);
     if (loginResult.code === 0) return this.notificationService.showNotification(loginResult.message);
-    
+
     this.notificationService.showNotification(registerResult.message);
     this.router.navigateByUrl('/');
   }
@@ -64,6 +73,9 @@ export class RegisterPage implements OnInit {
       };
 
       this.isLoading = false;
+    }, (error) => {
+      this.isLoading = false;
+      console.log(error);
     });
   }
 
